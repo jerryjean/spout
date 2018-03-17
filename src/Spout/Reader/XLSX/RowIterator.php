@@ -16,7 +16,7 @@ use Box\Spout\Reader\Common\XMLProcessor;
  *
  * @package Box\Spout\Reader\XLSX
  */
-class RowIterator implements IteratorInterface
+class RowIterator implements IteratorInterface,\Countable
 {
     /** Definition of XML nodes names used to parse data */
     const XML_NODE_DIMENSION = 'dimension';
@@ -401,5 +401,32 @@ class RowIterator implements IteratorInterface
     public function end()
     {
         $this->xmlReader->close();
+    }
+
+    /**
+     * TODO handle ignore blank rows options
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     * @throws \Exception
+     */
+    public function count()
+    {
+        $file=$this->xmlReader->getRealPathURIForFileInZip($this->filePath,$this->sheetDataXMLFilePath);
+        $f = fopen($file, 'rb');
+        $lines = 0;
+
+        while (!feof($f)) {
+            $lines += substr_count(fread($f, 65536), "</row>");
+        }
+
+        fclose($f);
+
+        return $lines;
+
     }
 }

@@ -10,7 +10,7 @@ use Box\Spout\Reader\IteratorInterface;
  *
  * @package Box\Spout\Reader\CSV
  */
-class SheetIterator implements IteratorInterface
+class SheetIterator implements IteratorInterface,\Countable
 {
     /** @var \Box\Spout\Reader\CSV\Sheet The CSV unique "sheet" */
     protected $sheet;
@@ -91,5 +91,19 @@ class SheetIterator implements IteratorInterface
     public function end()
     {
         // do nothing
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+       return 1;
     }
 }

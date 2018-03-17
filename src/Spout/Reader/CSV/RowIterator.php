@@ -11,7 +11,7 @@ use Box\Spout\Common\Helper\EncodingHelper;
  *
  * @package Box\Spout\Reader\CSV
  */
-class RowIterator implements IteratorInterface
+class RowIterator implements IteratorInterface, \Countable
 {
     /**
      * Value passed to fgetcsv. 0 means "unlimited" (slightly slower but accomodates for very long lines).
@@ -256,5 +256,30 @@ class RowIterator implements IteratorInterface
     public function end()
     {
         // do nothing
+    }
+
+    /**
+     * TODO handle the ignoreEmtpyRows option
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        $lines = 0;
+        $currentPosition = ftell($this->filePointer);
+        fseek($this->filePointer,0);
+
+        while (!feof($this->filePointer)) {
+            $lines += substr_count(fread($this->filePointer, 65536), $this->getEncodedEOLDelimiter());
+        }
+
+        fseek($this->filePointer,$currentPosition);
+
+        return $lines;
     }
 }

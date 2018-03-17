@@ -204,7 +204,7 @@ abstract class AbstractReader implements ReaderInterface
      * Returns an iterator to iterate over sheets.
      *
      * @api
-     * @return \Iterator To iterate over sheets
+     * @return \Iterator | \Countable To iterate over sheets
      * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException If called before opening the reader
      */
     public function getSheetIterator()
