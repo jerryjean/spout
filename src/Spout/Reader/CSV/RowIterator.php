@@ -266,16 +266,28 @@ class RowIterator implements IteratorInterface, \Countable
      * </p>
      * <p>
      * The return value is cast to an integer.
+     * @throws \Exception if reader is closed
      * @since 5.1.0
      */
     public function count()
     {
-        $lines = 0;
-        $currentPosition = ftell($this->filePointer);
-        fseek($this->filePointer,0);
+        if(!is_resource($this->filePointer)){
+            throw new \Exception('Reader is not opened');
+        }
 
-        while (!feof($this->filePointer)) {
-            $lines += substr_count(fread($this->filePointer, 65536), $this->getEncodedEOLDelimiter());
+        $lines = 0;
+        $currentPosition = $this->globalFunctionsHelper->ftell($this->filePointer);
+        $this->globalFunctionsHelper->fseek($this->filePointer,0);
+
+        while (!$this->globalFunctionsHelper->feof($this->filePointer)) {
+
+            $next= $this->globalFunctionsHelper->fread($this->filePointer, 65536);
+            $lines+= substr_count($next, $this->getEncodedEOLDelimiter());
+
+            if($this->globalFunctionsHelper->feof($this->filePointer)
+                && strlen($next)>1 && substr($next,-1,1)!=$this->getEncodedEOLDelimiter()) { //line terminated by EOF
+                $lines ++;
+            }
         }
 
         fseek($this->filePointer,$currentPosition);

@@ -39,8 +39,27 @@ class SheetTest extends \PHPUnit_Framework_TestCase
 
         $sheet = $reader->getSheetIterator()->current();
 
-        $reader->close();
+        //$reader->close();
 
         return $sheet;
+    }
+
+    public function testRowIteratorCount()
+    {
+        /** @var Sheet[] $sheets */
+        $sheets= [
+            $this->openFileAndReturnSheet('row_counts_0.csv'),
+            $this->openFileAndReturnSheet('row_counts_1.csv'),
+            $this->openFileAndReturnSheet('row_counts_1000.csv'),
+            ];
+
+        $counts =[0,1,1000];
+
+        foreach ($sheets as $key=>$sheet)
+        {
+            $rowIterator = $sheet->getRowIterator();
+
+            $this->assertEquals($counts[$key],count($rowIterator));
+        }
     }
 }

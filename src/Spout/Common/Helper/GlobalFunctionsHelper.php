@@ -120,6 +120,31 @@ class GlobalFunctionsHelper
     }
 
     /**
+     * Wrapper around global function fread()
+     * @see fread()
+     *
+     * @param resource $handle
+     * @param int $length
+     * @return int
+     */
+    public function fread($handle, $length)
+    {
+        return fread($handle, $length);
+    }
+
+    /**
+     * Wrapper around global function ftell()
+     * @see ftell()
+     *
+     * @param resource $handle
+     * @return int
+     */
+    public function ftell($handle)
+    {
+        return ftell($handle);
+    }
+
+    /**
      * Wrapper around global function fclose()
      * @see fclose()
      *
