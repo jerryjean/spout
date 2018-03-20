@@ -39,8 +39,6 @@ class SheetTest extends \PHPUnit_Framework_TestCase
 
         $sheet = $reader->getSheetIterator()->current();
 
-        //$reader->close();
-
         return $sheet;
     }
 
