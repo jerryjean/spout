@@ -4,6 +4,7 @@ namespace Box\Spout\Reader\CSV;
 
 use Box\Spout\Reader\IteratorInterface;
 use Box\Spout\Common\Helper\EncodingHelper;
+use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 
 /**
  * Class RowIterator
@@ -272,7 +273,7 @@ class RowIterator implements IteratorInterface, \Countable
     public function count()
     {
         if(!is_resource($this->filePointer)){
-            throw new \Exception('Reader is not opened');
+            throw new ReaderNotOpenedException('Reader is not opened');
         }
 
         $lines = 0;

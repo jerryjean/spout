@@ -15,7 +15,7 @@ use Box\Spout\Reader\Common\XMLProcessor;
  *
  * @package Box\Spout\Reader\ODS
  */
-class RowIterator implements IteratorInterface
+class RowIterator implements IteratorInterface, \Countable
 {
     /** Definition of XML nodes names used to parse data */
     const XML_NODE_TABLE = 'table:table';
@@ -348,5 +348,26 @@ class RowIterator implements IteratorInterface
     public function end()
     {
         $this->xmlReader->close();
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        $this->xmlReader->moveToFirstAttribute();
+        $count = 0;
+        while ($this->xmlReader->read()) {
+            if ($this->xmlReader->name === 'table:table-row' && $this->xmlReader->nodeType === XMLReader::ELEMENT) {
+                $count++;
+            }
+        }
+        return $count;
     }
 }

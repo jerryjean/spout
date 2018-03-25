@@ -3,6 +3,7 @@
 namespace Box\Spout\Reader\XLSX;
 
 use Box\Spout\Common\Exception\IOException;
+use Box\Spout\Common\Helper\GlobalFunctionsHelper;
 use Box\Spout\Reader\Exception\XMLProcessingException;
 use Box\Spout\Reader\IteratorInterface;
 use Box\Spout\Reader\Wrapper\XMLReader;
@@ -47,6 +48,7 @@ class RowIterator implements IteratorInterface,\Countable
 
     /** @var Helper\StyleHelper $styleHelper Helper to work with styles */
     protected $styleHelper;
+
 
     /**
      * TODO: This variable can be deleted when row indices get preserved
@@ -417,14 +419,16 @@ class RowIterator implements IteratorInterface,\Countable
     public function count()
     {
         $file=$this->xmlReader->getRealPathURIForFileInZip($this->filePath,$this->sheetDataXMLFilePath);
-        $f = fopen($file, 'rb');
+        $helper = new GlobalFunctionsHelper();
+
+        $f = $helper->fopen($file, 'rb');
         $lines = 0;
 
-        while (!feof($f)) {
-            $lines += substr_count(fread($f, 65536), "</row>");
+        while (!$helper->feof($f)) {
+            $lines += substr_count($helper->fread($f, 65536), "</row>");
         }
 
-        fclose($f);
+        $helper->fclose($f);
 
         return $lines;
 
