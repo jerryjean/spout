@@ -424,8 +424,14 @@ class RowIterator implements IteratorInterface,\Countable
         $f = $helper->fopen($file, 'rb');
         $lines = 0;
 
+        $end_edge='';
         while (!$helper->feof($f)) {
-            $lines += substr_count($helper->fread($f, 65536), "</row>");
+            $chunck = $helper->fread($f, 8192);
+            $lines+= substr_count($chunck,"</row>");
+            $start_edge = substr($chunck,0,5);
+            #account for cases where only part of '</row>' is read in
+            if(strpos($end_edge.$start_edge,'</row>')!==false) $lines++;
+            $end_edge = substr($chunck,-5);
         }
 
         $helper->fclose($f);
