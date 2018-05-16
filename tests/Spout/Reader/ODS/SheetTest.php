@@ -63,4 +63,38 @@ class SheetTest extends \PHPUnit_Framework_TestCase
 
         return $sheets;
     }
+
+    /**
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException
+     */
+    public function testSheetIteratorCount()
+    {
+        $resourcePath = $this->getResourcePath('two_sheets_with_custom_names.ods');
+
+        /** @var \Box\Spout\Reader\XLSX\Reader $reader */
+        $reader = ReaderFactory::create(Type::ODS);
+        $reader->setShouldFormatDates(false);
+        $reader->setShouldPreserveEmptyRows(false);
+        $reader->open($resourcePath);
+
+        $iterator = $reader->getSheetIterator();
+
+        $this->assertEquals(2,count($iterator));
+    }
+
+    public function testRowIteratorCount()
+    {
+        $sheets = $this->openFileAndReturnSheets('row_counts_0_1_1000.ods');
+
+        $counts =[0,1,1000];
+
+        foreach ($sheets as $key=>$sheet)
+        {
+            $rowIterator = $sheet->getRowIterator();
+
+            $this->assertEquals($counts[$key],count($rowIterator));
+        }
+    }
 }
